@@ -1,5 +1,5 @@
-import app from './app';
+import app from "./app";
 
-app.listen(app.get('post'), () => {
-    console.log('Server on port', app.get('port'));
+app.listen(app.get("post"), () => {
+  console.log("Server on port", app.get("port"));
 });

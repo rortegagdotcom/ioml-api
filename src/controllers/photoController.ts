@@ -35,7 +35,7 @@ export async function updatePhoto(photoId: number, link: string, name?: string) 
     return result;
 }
 
-async function deletePhoto(photoId: number) {
+export async function deletePhoto(photoId: number) {
     const [result] = await connection.execute(
         'DELETE FROM photos WHERE id = ?',
         [photoId]
