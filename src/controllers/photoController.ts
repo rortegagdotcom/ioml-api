@@ -1,7 +1,9 @@
-import { connection } from '../config/database'
+import { createConnection } from '../config/database'
+
+const connection = createConnection();
 
 export async function getPhotos(albumId: number) {
-    const [rows] = await connection.execute(
+    const [rows] = await (await connection).execute(
         'SELECT * FROM photos WHERE album_id = ?',
         [albumId]
     );
@@ -12,15 +14,18 @@ export async function getPhotos(albumId: number) {
 }
 
  export async function getPhoto(albumId: number, photoId: number) {
-    const [rows] = await connection.execute(
+    const [rows] = await (await connection).execute(
         'SELECT * FROM photos WHERE album_id = ? AND id = ?',
         [albumId, photoId]
     );
-    return rows[0];
+    const photo = JSON.stringify(rows);
+    console.log(photo);
+    
+    return photo;
 }
 
 export async function insertPhoto(albumId: number, link: string, name?: string) {
-    const [result] = await connection.execute(
+    const [result] = await (await connection).execute(
         'INSERT INTO photos (album_id, link, name) VALUES (?, ?, ?)',
         [albumId, link, name]
     );
@@ -28,7 +33,7 @@ export async function insertPhoto(albumId: number, link: string, name?: string) 
 }
 
 export async function updatePhoto(photoId: number, link: string, name?: string) {
-    const [result] = await connection.execute(
+    const [result] = await (await connection).execute(
         'UPDATE photos SET link = ?, name = ? WHERE id = ?',
         [link, name, photoId]
     );
@@ -36,11 +41,11 @@ export async function updatePhoto(photoId: number, link: string, name?: string) 
 }
 
 export async function deletePhoto(photoId: number) {
-    const [result] = await connection.execute(
+    const [result] = await (await connection).execute(
         'DELETE FROM photos WHERE id = ?',
         [photoId]
     );
     return result;
 }
 
-connection.end();
+(await connection).end();

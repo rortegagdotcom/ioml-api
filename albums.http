@@ -1,0 +1,21 @@
+@api = http://localhost:4000
+
+GET {{api}}/albums
+###
+
+POST {{api}}/albums
+
+Content-Type: application/json
+{
+    "name" : "Album 1"
+}
+###
+
+PUT {{api}}/albums/1
+###
+
+GET {{api}}/albums/1
+###
+
+DELETE {{api}}/albums/1
+###

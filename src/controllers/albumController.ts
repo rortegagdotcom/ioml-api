@@ -1,7 +1,9 @@
-import { connection } from "../config/database";
+import { createConnection } from "../config/database";
+
+const connection = createConnection();
 
 export async function getAlbums() {
-  const [rows] = await connection.execute("SELECT * FROM albums");
+  const [rows] = await (await connection).execute("SELECT * FROM albums");
   const albums = JSON.stringify(rows);
   console.log(albums);
 
@@ -9,14 +11,17 @@ export async function getAlbums() {
 }
 
 export async function getAlbum(albumId: number) {
-  const [rows] = await connection.execute("SELECT * FROM albums WHERE id = ?", [
+  const [rows] = await (await connection).execute("SELECT * FROM albums WHERE id = ?", [
     albumId,
   ]);
-  return rows[0];
+  const album = JSON.stringify(rows);
+  console.log(album);
+  
+  return album;
 }
 
 export async function insertAlbum(name: string) {
-  const [result] = await connection.execute(
+  const [result] = await (await connection).execute(
     "INSERT INTO albums (name) VALUES (?)",
     [name]
   );
@@ -24,7 +29,7 @@ export async function insertAlbum(name: string) {
 }
 
 export async function updateAlbum(name: string, albumId: number) {
-  const [result] = await connection.execute(
+  const [result] = await (await connection).execute(
     "UPDATE albums SET name = ? WHERE id = ?",
     [name, albumId]
   );
@@ -32,10 +37,10 @@ export async function updateAlbum(name: string, albumId: number) {
 }
 
 export async function deleteAlbum(albumId: number) {
-  const [result] = await connection.execute("DELETE FROM albums WHERE id = ?", [
+  const [result] = await (await connection).execute("DELETE FROM albums WHERE id = ?", [
     albumId,
   ]);
   return result;
 }
 
-connection.end();
+(await connection).end();
