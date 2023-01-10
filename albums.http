@@ -1,9 +1,9 @@
-@api = http://localhost:4000
+@api = http://localhost:5748
 
-GET {{api}}/albums
+GET {{api}}/albums HTTP/1.1
 ###
 
-POST {{api}}/albums
+POST {{api}}/albums HTTP/1.1
 
 Content-Type: application/json
 {
@@ -11,11 +11,11 @@ Content-Type: application/json
 }
 ###
 
-PUT {{api}}/albums/1
+PUT {{api}}/albums/1 HTTP/1.1
 ###
 
-GET {{api}}/albums/1
+GET {{api}}/albums/1 HTTP/1.1
 ###
 
-DELETE {{api}}/albums/1
+DELETE {{api}}/albums/1 HTTP/1.1
 ###

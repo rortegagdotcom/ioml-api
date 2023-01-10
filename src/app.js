@@ -14,7 +14,7 @@ app.use(cors());
 app.use(express.json);
 app.use(express.urlencoded({ extended: false }));
 
-app.use(albumsRoutes);
-app.use(photosRoutes);
+app.use("/api", albumsRoutes);
+app.use("/api", photosRoutes);
 
 export default app;
