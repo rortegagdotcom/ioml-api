@@ -1,4 +1,4 @@
-@api = http://localhost:5748
+@api = http://localhost:5748/api
 
 GET {{api}}/albums HTTP/1.1
 ###

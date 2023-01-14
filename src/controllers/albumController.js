@@ -1,4 +1,4 @@
-import getConnection from "../config/database";
+import { getConnection } from "../config/database";
 
 const getAlbums = async (req, res) => {
   try {

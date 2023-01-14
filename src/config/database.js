@@ -12,4 +12,6 @@ const getConnection = () => {
   return connection;
 };
 
-export default getConnection;
+module.exports = {
+  getConnection
+};
