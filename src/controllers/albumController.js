@@ -29,12 +29,15 @@ const getAlbum = async (req, res) => {
 const addAlbum = async (req, res) => {
   try {
     const { name } = req.body;
-    if (name === undefined) {
+    const { cover } = req.body;
+    if (name === undefined || cover === undefined) {
       res.status(400), json({ message: 'Bad Request. Please fill all field.' });
     }
-    const album = name;
     const connection = await getConnection();
-    await connection.query('INSERT INTO albums (name) VALUES (?)', album);
+    await connection.query('INSERT INTO albums (name, cover) VALUES (?, ?)', [
+      name,
+      cover,
+    ]);
     res.json({ message: 'Album added' });
   } catch (error) {
     res.status(500);
