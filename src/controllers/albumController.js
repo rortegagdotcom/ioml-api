@@ -49,16 +49,16 @@ const updateAlbum = async (req, res) => {
   try {
     const { albumId } = req.params;
     const { name } = req.body;
+    const { cover } = req.body;
 
-    if (albumId === undefined || name === undefined) {
+    if (albumId === undefined || name === undefined || cover === undefined) {
       res.status(400).json({ message: 'Bad Request. Please fill all field.' });
     }
 
-    const album = name;
     const connection = await getConnection();
     const result = await connection.query(
-      'UPDATE albums SET name = ? WHERE id = ?',
-      [album, albumId]
+      'UPDATE albums SET name = ?, cover = ? WHERE id = ?',
+      [name, cover, albumId]
     );
     res.json(result);
   } catch (error) {
