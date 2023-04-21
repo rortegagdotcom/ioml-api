@@ -1,11 +1,13 @@
-import { getConnection } from "../config/database";
+import { getConnection } from '../config/database';
+import path from 'path';
+import fs from 'fs';
 
 const getPhotos = async (req, res) => {
   try {
     const { albumId } = req.params;
     const connection = await getConnection();
     const result = await connection.query(
-      "SELECT * FROM photos WHERE album_id = ?",
+      'SELECT * FROM photos WHERE album_id = ?',
       albumId
     );
     res.json(result);
@@ -21,7 +23,7 @@ const getPhoto = async (req, res) => {
     const photo = { albumId, photoId };
     const connection = await getConnection();
     const result = await connection.query(
-      "SELECT * FROM photos WHERE album_id = ? AND id = ?",
+      'SELECT * FROM photos WHERE album_id = ? AND id = ?',
       photo
     );
     res.json(result);
@@ -34,19 +36,24 @@ const getPhoto = async (req, res) => {
 const addPhoto = async (req, res) => {
   try {
     const { albumId } = req.params;
-    const { link, name } = req.body;
+    const { name } = req.body;
+
+    const filename = req.file.originalname;
+    const data = fs.readFileSync(
+      path.join(__dirname, '../images/' + req.file.filename)
+    );
 
     if (albumId === undefined || link === undefined || name === undefined) {
-      res.status(400).json({ message: "Bad Request: Please fill all fields." });
+      res.status(400).json({ message: 'Bad Request: Please fill all fields.' });
     }
 
-    const photo = { albumId, link, name };
+    const photo = { albumId, name, filename, data };
     const connection = await getConnection();
     await connection.query(
-      "INSERT INTO photos (album_id, link, name) VALUES (?, ?, ?)",
+      'INSERT INTO photos (album_id, name, filename, data) VALUES (?, ?, ?, ?)',
       photo
     );
-    res.json({ message: "Photo added" });
+    res.json({ message: 'Photo added' });
   } catch (error) {
     res.status(500);
     res.send(error.message);
@@ -59,13 +66,13 @@ const updatePhoto = async (req, res) => {
     const { link, name } = req.body;
 
     if (photoId === undefined || link === undefined || name === undefined) {
-      res.status(400).json({ message: "Bad Request: Please fill all fields." });
+      res.status(400).json({ message: 'Bad Request: Please fill all fields.' });
     }
 
     const photo = { link, name, photoId };
     const connection = await getConnection();
     await connection.query(
-      "UPDATE photos SET link = ?, name = ? WHERE id = ?",
+      'UPDATE photos SET link = ?, name = ? WHERE id = ?',
       photo
     );
     res.json(result);
@@ -80,7 +87,7 @@ const deletePhoto = async (req, res) => {
     const { photoId } = req.params;
     const connection = await getConnection();
     const result = await connection.query(
-      "DELETE FROM photos WHERE id = ?",
+      'DELETE FROM photos WHERE id = ?',
       photoId
     );
     res.json(result);
