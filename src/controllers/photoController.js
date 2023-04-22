@@ -1,6 +1,4 @@
 import { getConnection } from '../config/database';
-import path from 'path';
-import fs from 'fs';
 
 const getPhotos = async (req, res) => {
   try {
@@ -37,20 +35,16 @@ const addPhoto = async (req, res) => {
   try {
     const { albumId } = req.params;
     const { name } = req.body;
-
-    const filename = req.file.originalname;
-    const data = fs.readFileSync(
-      path.join(__dirname, '../images/' + req.file.filename)
-    );
+    const { filename } = req.file.originalname;
 
     if (albumId === undefined || link === undefined || name === undefined) {
       res.status(400).json({ message: 'Bad Request: Please fill all fields.' });
     }
 
-    const photo = { albumId, name, filename, data };
+    const photo = { albumId, name, filename };
     const connection = await getConnection();
     await connection.query(
-      'INSERT INTO photos (album_id, name, filename, data) VALUES (?, ?, ?, ?)',
+      'INSERT INTO photos (album_id, name, filename) VALUES (?, ?, ?, ?)',
       photo
     );
     res.json({ message: 'Photo added' });
