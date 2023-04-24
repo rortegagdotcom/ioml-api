@@ -37,7 +37,7 @@ const addPhoto = async (req, res) => {
     const { name } = req.body;
     const { filename } = req.file.originalname;
 
-    if (albumId === undefined || link === undefined || name === undefined) {
+    if (albumId === undefined || name === undefined || filename === undefined) {
       res.status(400).json({ message: 'Bad Request: Please fill all fields.' });
     }
 
