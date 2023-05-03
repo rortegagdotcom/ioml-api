@@ -35,7 +35,7 @@ const addPhoto = async (req, res) => {
   try {
     const { albumId } = req.params;
     const { name } = req.body;
-    const { filename } = req.file.originalname;
+    const { filename } = req.file;
 
     if (albumId === undefined || name === undefined || filename === undefined) {
       res.status(400).json({ message: 'Bad Request: Please fill all fields.' });
@@ -44,7 +44,7 @@ const addPhoto = async (req, res) => {
     const photo = { albumId, name, filename };
     const connection = await getConnection();
     await connection.query(
-      'INSERT INTO photos (album_id, name, filename) VALUES (?, ?, ?, ?)',
+      'INSERT INTO photos (album_id, name, filename) VALUES (?, ?, ?)',
       photo
     );
     res.json({ message: 'Photo added' });
@@ -57,16 +57,17 @@ const addPhoto = async (req, res) => {
 const updatePhoto = async (req, res) => {
   try {
     const { photoId } = req.params;
-    const { link, name } = req.body;
+    const { name } = req.body;
+    const { filename } = req.file.originalname;
 
-    if (photoId === undefined || link === undefined || name === undefined) {
+    if (photoId === undefined || name === undefined || filename === undefined) {
       res.status(400).json({ message: 'Bad Request: Please fill all fields.' });
     }
 
-    const photo = { link, name, photoId };
+    const photo = { filename, name, photoId };
     const connection = await getConnection();
     await connection.query(
-      'UPDATE photos SET link = ?, name = ? WHERE id = ?',
+      'UPDATE photos SET filename = ?, name = ? WHERE id = ?',
       photo
     );
     res.json(result);
