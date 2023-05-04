@@ -33,19 +33,18 @@ const getPhoto = async (req, res) => {
 
 const addPhoto = async (req, res) => {
   try {
-    const { albumId } = req.params;
+    const { albumId } = req.body;
     const { name } = req.body;
-    const { filename } = req.file;
+    const photo = `http://localhost:5748/public/photos/${req.file.filename}`;
 
-    if (albumId === undefined || name === undefined || filename === undefined) {
+    if (albumId === undefined || name === undefined || photo === undefined) {
       res.status(400).json({ message: 'Bad Request: Please fill all fields.' });
     }
 
-    const photo = { albumId, name, filename };
     const connection = await getConnection();
     await connection.query(
       'INSERT INTO photos (album_id, name, filename) VALUES (?, ?, ?)',
-      photo
+      [albumId, name, photo]
     );
     res.json({ message: 'Photo added' });
   } catch (error) {

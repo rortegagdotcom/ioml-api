@@ -1,5 +1,6 @@
 dist
 node_modules
+public/photos
 src/.env
 albums.http
 photos.http
