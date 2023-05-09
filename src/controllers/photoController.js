@@ -35,7 +35,7 @@ const addPhoto = async (req, res) => {
   try {
     const { albumId } = req.body;
     const { name } = req.body;
-    const photo = `http://localhost:5748/public/photos/${req.file.filename}`;
+    const photo = `/public/photos/${req.file.filename}`;
 
     if (albumId === undefined || name === undefined || photo === undefined) {
       res.status(400).json({ message: 'Bad Request: Please fill all fields.' });
