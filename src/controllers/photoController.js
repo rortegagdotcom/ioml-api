@@ -18,11 +18,10 @@ const getPhotos = async (req, res) => {
 const getPhoto = async (req, res) => {
   try {
     const { albumId, photoId } = req.params;
-    const photo = { albumId, photoId };
     const connection = await getConnection();
     const result = await connection.query(
       'SELECT * FROM photos WHERE album_id = ? AND id = ?',
-      photo
+      [albumId, photoId]
     );
     res.json(result);
   } catch (error) {
@@ -35,16 +34,16 @@ const addPhoto = async (req, res) => {
   try {
     const { albumId } = req.body;
     const { name } = req.body;
-    const photo = `/public/photos/${req.file.filename}`;
+    const filename = `/public/photos/${req.file.filename}`;
 
-    if (albumId === undefined || name === undefined || photo === undefined) {
+    if (albumId === undefined || name === undefined || filename === undefined) {
       res.status(400).json({ message: 'Bad Request: Please fill all fields.' });
     }
 
     const connection = await getConnection();
     await connection.query(
       'INSERT INTO photos (album_id, name, filename) VALUES (?, ?, ?)',
-      [albumId, name, photo]
+      [albumId, name, filename]
     );
     res.json({ message: 'Photo added' });
   } catch (error) {
