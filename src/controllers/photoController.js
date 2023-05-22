@@ -1,4 +1,5 @@
 import { getConnection } from '../config/database';
+import { methods as storage } from '../storage/storage';
 
 const getPhotos = async (req, res) => {
   try {
@@ -79,10 +80,16 @@ const deletePhoto = async (req, res) => {
   try {
     const { photoId } = req.params;
     const connection = await getConnection();
+    const [photoFile] = await connection.query(
+      'SELECT * FROM photos WHERE id = ?',
+      photoId
+    );
+    storage.deleteFile(photoFile);
     const result = await connection.query(
       'DELETE FROM photos WHERE id = ?',
       photoId
     );
+
     res.json(result);
   } catch (error) {
     res.status(500);
