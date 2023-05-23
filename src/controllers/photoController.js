@@ -57,19 +57,23 @@ const updatePhoto = async (req, res) => {
   try {
     const { photoId } = req.params;
     const { name } = req.body;
-    const { filename } = req.file.originalname;
+    const filename = `/public/photos/${req.file.filename}`;
 
     if (photoId === undefined || name === undefined || filename === undefined) {
       res.status(400).json({ message: 'Bad Request: Please fill all fields.' });
     }
 
-    const photo = { filename, name, photoId };
     const connection = await getConnection();
+    const [photoFile] = await connection.query(
+      'SELECT * FROM photos WHERE id = ?',
+      photoId
+    );
+    storage.deleteFile(photoFile);
     await connection.query(
       'UPDATE photos SET filename = ?, name = ? WHERE id = ?',
-      photo
+      [filename, name, photoId]
     );
-    res.json(result);
+    res.json({ message: 'Photo updated' });
   } catch (error) {
     res.status(500);
     res.send(error.message);
