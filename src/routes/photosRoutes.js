@@ -7,7 +7,7 @@ const routerPhotos = Router();
 routerPhotos.get('/albums/:albumId/photos', photosCtrl.getPhotos);
 routerPhotos.get('/albums/:albumId/photo/:photoId', photosCtrl.getPhoto);
 routerPhotos.post('/photos', storage.fileUpload, photosCtrl.addPhoto);
-routerPhotos.put('/photos/:photoId', photosCtrl.updatePhoto);
+routerPhotos.put('/photos/:photoId', storage.fileUpload, photosCtrl.updatePhoto);
 routerPhotos.delete('/photos/:photoId', photosCtrl.deletePhoto);
 
 export default routerPhotos;
