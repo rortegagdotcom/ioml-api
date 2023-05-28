@@ -13,7 +13,7 @@ const fileUpload = multer({ storage: diskStorage }).single('photo');
 
 const deleteFile = (photoFile) => {
   if (photoFile.length > 0) {
-    for (var i = 0; i <= photoFile.length; i++) {
+    for (let i = 0; i < photoFile.length; i++) {
       const filePath = path.join(__dirname, '../../', photoFile[i].filename);
       fs.unlink(filePath, (error) => {
         if (error) console.error(error);
