@@ -1,6 +1,30 @@
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import webp from 'webp-converter';
+
+const convertImageToWebP = async (req, res, next) => {
+  const originalImagePath = req.file.path;
+  const webPImagePath = originalImagePath.replace(/\.(jpe?g|png)$/i, '.webp');
+
+  webp.grant_permission();
+
+  const result = await webp.cwebp(originalImagePath, webPImagePath, {
+    quality: 80,
+  });
+
+  if (result.error) {
+    return res.status(500).json({ error: 'Error converting image to WebP' });
+  }
+
+  fs.unlink(originalImagePath, (error) => {
+    if (error)
+      console.error(`Error deleting original file: ${originalImagePath}`);
+  });
+
+  req.file.path = webPImagePath;
+  next();
+};
 
 const diskStorage = multer.diskStorage({
   destination: path.join(__dirname, '../../public/photos'),
@@ -24,6 +48,7 @@ const deleteFile = (photoFile) => {
 };
 
 export const methods = {
+  convertImageToWebP,
   fileUpload,
   deleteFile,
 };

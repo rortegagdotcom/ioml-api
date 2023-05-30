@@ -35,7 +35,9 @@ const addPhoto = async (req, res) => {
   try {
     const { albumId } = req.body;
     const { name } = req.body;
-    const filename = `/public/photos/${req.file.filename}`;
+    const originalFilename = req.file.filename;
+    const webpFilename = originalFilename.replace(/\.(jpe?g|png)$/i, '.webp');
+    const filename = `/public/photos/${webpFilename}`;
 
     if (albumId === undefined || name === undefined || filename === undefined) {
       res.status(400).json({ message: 'Bad Request: Please fill all fields.' });
@@ -57,7 +59,9 @@ const updatePhoto = async (req, res) => {
   try {
     const { photoId } = req.params;
     const { name } = req.body;
-    const filename = `/public/photos/${req.file.filename}`;
+    const originalFilename = req.file.filename;
+    const webpFilename = originalFilename.replace(/\.(jpe?g|png)$/i, '.webp');
+    const filename = `/public/photos/${webpFilename}`;
 
     if (photoId === undefined || name === undefined || filename === undefined) {
       res.status(400).json({ message: 'Bad Request: Please fill all fields.' });
