@@ -3,26 +3,38 @@ import path from 'path';
 import fs from 'fs';
 import webp from 'webp-converter';
 
-const convertImageToWebP = async (req, res, next) => {
-  const originalImagePath = req.file.path;
-  const webPImagePath = originalImagePath.replace(/\.(jpe?g|png)$/i, '.webp');
+const convertImagesToWebP = async (req, res, next) => {
+  if (!req.files) {
+    return res.status(400).json({ error: 'No files provided' });
+  }
 
   webp.grant_permission();
 
-  const result = await webp.cwebp(originalImagePath, webPImagePath, {
-    quality: 80,
-  });
+  await Promise.all(
+    req.files.map(async (file) => {
+      const originalImagePath = file.path;
+      const webpImagePath = originalImagePath.replace(
+        /\.(jpe?g|png)$/i,
+        '.webp'
+      );
 
-  if (result.error) {
-    return res.status(500).json({ error: 'Error converting image to WebP' });
-  }
+      const result = await webp.cwebp(originalImagePath, webpImagePath, {
+        quality: 80,
+      });
 
-  fs.unlink(originalImagePath, (error) => {
-    if (error)
-      console.error(`Error deleting original file: ${originalImagePath}`);
-  });
+      if (result.error) {
+        return res.status(500).json({ error: 'Error coverting iamge to WebP' });
+      }
 
-  req.file.path = webPImagePath;
+      fs.unlink(originalImagePath, (error) => {
+        if (error)
+          console.error(`Error deleting original file: ${originalImagePath}`);
+      });
+
+      file.path = webpImagePath;
+    })
+  );
+
   next();
 };
 
@@ -33,12 +45,12 @@ const diskStorage = multer.diskStorage({
   },
 });
 
-const fileUpload = multer({ storage: diskStorage }).single('photo');
+const fileUpload = multer({ storage: diskStorage }).array('photo', 5);
 
-const deleteFile = (photoFile) => {
-  if (photoFile.length > 0) {
-    for (let i = 0; i < photoFile.length; i++) {
-      const filePath = path.join(__dirname, '../../', photoFile[i].filename);
+const deleteFile = (photoFiles) => {
+  if (photoFiles.length > 0) {
+    for (let i = 0; i < photoFiles.length; i++) {
+      const filePath = path.join(__dirname, '../../', photoFiles[i].filename);
       fs.unlink(filePath, (error) => {
         if (error) console.error(error);
         else console.log(`File eliminated: ${filePath}`);
@@ -48,7 +60,7 @@ const deleteFile = (photoFile) => {
 };
 
 export const methods = {
-  convertImageToWebP,
+  convertImagesToWebP,
   fileUpload,
   deleteFile,
 };

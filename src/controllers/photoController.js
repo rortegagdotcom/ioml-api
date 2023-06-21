@@ -34,21 +34,25 @@ const getPhoto = async (req, res) => {
 const addPhoto = async (req, res) => {
   try {
     const { albumId } = req.body;
-    const { name } = req.body;
-    const originalFilename = req.file.filename;
-    const webpFilename = originalFilename.replace(/\.(jpe?g|png)$/i, '.webp');
-    const filename = `/public/photos/${webpFilename}`;
 
-    if (albumId === undefined || name === undefined || filename === undefined) {
+    if (albumId === undefined || !req.files || req.files.length === 0) {
       res.status(400).json({ message: 'Bad Request: Please fill all fields.' });
     }
 
     const connection = await getConnection();
-    await connection.query(
-      'INSERT INTO photos (album_id, name, filename) VALUES (?, ?, ?)',
-      [albumId, name, filename]
-    );
-    res.json({ message: 'Photo added' });
+
+    for (const file of req.files) {
+      const originalFilename = file.filename;
+      const webpFilename = originalFilename.replace(/\.(jpe?g|png)$/i, '.webp');
+      const filename = `/public/photos/${webpFilename}`;
+
+      await connection.query(
+        'INSERT INTO photos (album_id, filename) VALUES (?, ?)',
+        [albumId, filename]
+      );
+    }
+
+    res.json({ message: 'Photos added' });
   } catch (error) {
     res.status(500);
     res.send(error.message);
@@ -58,12 +62,8 @@ const addPhoto = async (req, res) => {
 const updatePhoto = async (req, res) => {
   try {
     const { photoId } = req.params;
-    const { name } = req.body;
-    const originalFilename = req.file.filename;
-    const webpFilename = originalFilename.replace(/\.(jpe?g|png)$/i, '.webp');
-    const filename = `/public/photos/${webpFilename}`;
 
-    if (photoId === undefined || name === undefined || filename === undefined) {
+    if (photoId === undefined || !req.files || req.files.length === 0) {
       res.status(400).json({ message: 'Bad Request: Please fill all fields.' });
     }
 
@@ -72,11 +72,19 @@ const updatePhoto = async (req, res) => {
       'SELECT * FROM photos WHERE id = ?',
       photoId
     );
-    storage.deleteFile(photoFile);
-    await connection.query(
-      'UPDATE photos SET filename = ?, name = ? WHERE id = ?',
-      [filename, name, photoId]
-    );
+
+    for (const file of req.files) {
+      storage.deleteFile(photoFile);
+      const originalFilename = file.filename;
+      const webpFilename = originalFilename.replace(/\.(jpe?g|png)$/i, '.webp');
+      const filename = `/public/photos/${webpFilename}`;
+
+      await connection.query('UPDATE photos SET filename = ? WHERE id = ?', [
+        filename,
+        photoId,
+      ]);
+    }
+
     res.json({ message: 'Photo updated' });
   } catch (error) {
     res.status(500);

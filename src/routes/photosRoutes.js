@@ -9,13 +9,13 @@ routerPhotos.get('/albums/:albumId/photo/:photoId', photosCtrl.getPhoto);
 routerPhotos.post(
   '/photos',
   storage.fileUpload,
-  storage.convertImageToWebP,
+  storage.convertImagesToWebP,
   photosCtrl.addPhoto
 );
 routerPhotos.put(
   '/photos/:photoId',
   storage.fileUpload,
-  storage.convertImageToWebP,
+  storage.convertImagesToWebP,
   photosCtrl.updatePhoto
 );
 routerPhotos.delete('/photos/:photoId', photosCtrl.deletePhoto);
