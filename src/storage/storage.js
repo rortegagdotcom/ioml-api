@@ -19,7 +19,7 @@ const convertImagesToWebP = async (req, res, next) => {
       );
 
       const result = await webp.cwebp(originalImagePath, webpImagePath, {
-        quality: 80,
+        quality: 50,
       });
 
       if (result.error) {
