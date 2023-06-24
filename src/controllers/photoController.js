@@ -101,12 +101,9 @@ const deletePhoto = async (req, res) => {
       photoId
     );
     storage.deleteFile(photoFile);
-    const result = await connection.query(
-      'DELETE FROM photos WHERE id = ?',
-      photoId
-    );
+    await connection.query('DELETE FROM photos WHERE id = ?', photoId);
 
-    res.json(result);
+    res.json({ message: 'Photo deleted' });
   } catch (error) {
     res.status(500);
     res.send(error.message);

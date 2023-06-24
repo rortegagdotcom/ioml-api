@@ -57,11 +57,11 @@ const updateAlbum = async (req, res) => {
     }
 
     const connection = await getConnection();
-    const result = await connection.query(
+    await connection.query(
       'UPDATE albums SET name = ?, cover = ? WHERE id = ?',
       [name, cover, albumId]
     );
-    res.json(result);
+    res.json({ message: 'Album updated' });
   } catch (error) {
     res.status(500);
     res.send(error.message);
@@ -77,11 +77,8 @@ const deleteAlbum = async (req, res) => {
       albumId
     );
     storage.deleteFile(photoFile);
-    const result = await connection.query(
-      'DELETE FROM albums WHERE id = ?',
-      albumId
-    );
-    res.json(result);
+    await connection.query('DELETE FROM albums WHERE id = ?', albumId);
+    res.json({ message: 'Album deleted' });
   } catch (error) {
     res.status(500);
     res.send(error.message);
