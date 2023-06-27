@@ -42,9 +42,7 @@ const addPhoto = async (req, res) => {
     const connection = await getConnection();
 
     for (const file of req.files) {
-      const originalFilename = file.filename;
-      const webpFilename = originalFilename.replace(/\.(jpe?g|png)$/i, '.webp');
-      const filename = `/public/photos/${webpFilename}`;
+      const filename = `/public/photos/${file.filename}`;
 
       await connection.query(
         'INSERT INTO photos (album_id, filename) VALUES (?, ?)',
@@ -75,9 +73,7 @@ const updatePhoto = async (req, res) => {
 
     for (const file of req.files) {
       storage.deleteFile(photoFile);
-      const originalFilename = file.filename;
-      const webpFilename = originalFilename.replace(/\.(jpe?g|png)$/i, '.webp');
-      const filename = `/public/photos/${webpFilename}`;
+      const filename = `/public/photos/${file.filename}`;
 
       await connection.query('UPDATE photos SET filename = ? WHERE id = ?', [
         filename,

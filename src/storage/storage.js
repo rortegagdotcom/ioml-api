@@ -1,42 +1,6 @@
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import sharp from 'sharp';
-
-const convertImagesToWebP = async (req, res, next) => {
-  if (!req.files) {
-    return res.status(400).json({ error: 'No files provided' });
-  }
-
-  await Promise.all(
-    req.files.map(async (file) => {
-      const originalImagePath = file.path;
-      const webpImagePath = originalImagePath.replace(
-        /\.(jpe?g|png)$/i,
-        '.webp'
-      );
-
-      try {
-        await sharp(originalImagePath)
-          .webp({ quality: 50 })
-          .toFile(webpImagePath);
-
-        fs.unlink(originalImagePath, (error) => {
-          if (error)
-            console.error(`Error deleting original file: ${originalImagePath}`);
-        });
-
-        file.path = webpImagePath;
-      } catch (err) {
-        return res
-          .status(500)
-          .json({ error: 'Error converting image to WebP' });
-      }
-    })
-  );
-
-  next();
-};
 
 const diskStorage = multer.diskStorage({
   destination: path.join(__dirname, '../../public/photos'),
@@ -60,7 +24,6 @@ const deleteFile = (photoFiles) => {
 };
 
 export const methods = {
-  convertImagesToWebP,
   fileUpload,
   deleteFile,
 };
