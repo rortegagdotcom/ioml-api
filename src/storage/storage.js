@@ -1,14 +1,12 @@
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import webp from 'webp-converter';
+import sharp from 'sharp';
 
 const convertImagesToWebP = async (req, res, next) => {
   if (!req.files) {
     return res.status(400).json({ error: 'No files provided' });
   }
-
-  webp.grant_permission();
 
   await Promise.all(
     req.files.map(async (file) => {
@@ -18,20 +16,22 @@ const convertImagesToWebP = async (req, res, next) => {
         '.webp'
       );
 
-      const result = await webp.cwebp(originalImagePath, webpImagePath, {
-        quality: 50,
-      });
+      try {
+        await sharp(originalImagePath)
+          .webp({ quality: 50 })
+          .toFile(webpImagePath);
 
-      if (result.error) {
-        return res.status(500).json({ error: 'Error coverting iamge to WebP' });
+        fs.unlink(originalImagePath, (error) => {
+          if (error)
+            console.error(`Error deleting original file: ${originalImagePath}`);
+        });
+
+        file.path = webpImagePath;
+      } catch (err) {
+        return res
+          .status(500)
+          .json({ error: 'Error converting image to WebP' });
       }
-
-      fs.unlink(originalImagePath, (error) => {
-        if (error)
-          console.error(`Error deleting original file: ${originalImagePath}`);
-      });
-
-      file.path = webpImagePath;
     })
   );
 
