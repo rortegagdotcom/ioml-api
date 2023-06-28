@@ -1,11 +1,11 @@
-import mysql from "mysql2/promise";
-import config from "./config";
+import mysql from 'mysql2/promise';
+import config from './config';
 
 const connection = mysql.createConnection({
-  host: config.MYSQL_HOST,
-  database: config.MYSQL_DATABASE,
   user: config.MYSQL_USER,
-  password: config.MYSQL_PASSWORD
+  host: config.MYSQL_HOST,
+  password: config.MYSQL_PASSWORD,
+  database: config.MYSQL_DATABASE,
 });
 
 const getConnection = () => {
@@ -13,5 +13,5 @@ const getConnection = () => {
 };
 
 module.exports = {
-  getConnection
+  getConnection,
 };

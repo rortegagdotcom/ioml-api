@@ -9,7 +9,7 @@ import photosRoutes from './routes/photosRoutes';
 const app = express();
 app.set('port', config.PORT);
 
-app.use(morgan('dev'));
+app.use(morgan('tiny'));
 app.use(cors());
 app.use(express.json());
 
