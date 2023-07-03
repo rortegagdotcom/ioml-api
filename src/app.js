@@ -7,6 +7,7 @@ import albumsRoutes from './routes/albumsRoutes';
 import photosRoutes from './routes/photosRoutes';
 
 const app = express();
+
 app.set('port', config.PORT);
 
 app.use(morgan('tiny'));

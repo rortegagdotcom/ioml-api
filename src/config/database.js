@@ -12,6 +12,13 @@ const getConnection = () => {
   return connection;
 };
 
+const closeConnection = async () => {
+  if (connection) {
+    (await connection).end;
+  }
+};
+
 module.exports = {
   getConnection,
+  closeConnection,
 };
