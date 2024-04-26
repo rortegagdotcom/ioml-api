@@ -1,6 +1,6 @@
 {
   "name": "api",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "IOML API",
   "main": "index.js",
   "scripts": {
@@ -23,6 +23,6 @@
     "@babel/node": "^7.22.5",
     "@babel/preset-env": "^7.22.5",
     "morgan": "^1.10.0",
-    "nodemon": "^2.0.22"
+    "nodemon": "^3.1.0"
   }
 }
