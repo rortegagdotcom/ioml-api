@@ -3,9 +3,9 @@ import { config } from 'dotenv';
 config();
 
 export default {
-  MYSQL_DATABASE: process.env.MYSQL_DATABASE,
-  MYSQL_USER: process.env.MYSQL_USER,
-  MYSQL_PASSWORD: process.env.MYSQL_PASSWORD,
-  MYSQL_HOST: process.env.MYSQL_HOST,
+  MARIADB_DATABASE: process.env.MARIADB_DATABASE,
+  MARIADB_USER: process.env.MARIADB_USER,
+  MARIADB_PASSWORD: process.env.MARIADB_PASSWORD,
+  MARIADB_HOST: process.env.MARIADB_HOST,
   PORT: process.env.PORT,
 };

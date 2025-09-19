@@ -1,11 +1,11 @@
-import mysql from 'mysql2/promise';
+import mariadb from 'mariadb';
 import config from './config';
 
-const connection = mysql.createConnection({
-  user: config.MYSQL_USER,
-  host: config.MYSQL_HOST,
-  password: config.MYSQL_PASSWORD,
-  database: config.MYSQL_DATABASE,
+const connection = mariadb.createConnection({
+  user: config.MARIADB_USER,
+  host: config.MARIADB_HOST,
+  password: config.MARIADB_PASSWORD,
+  database: config.MARIADB_DATABASE,
 });
 
 const getConnection = () => {
